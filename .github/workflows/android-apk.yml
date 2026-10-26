@@ -1,7 +1,7 @@
 name: Build and verify Android
 on:
   push:
-    branches: [main, 'codex/**']
+    branches: [main, 'codex/**', 'continuacion/**']
   workflow_dispatch:
 permissions:
   contents: read
