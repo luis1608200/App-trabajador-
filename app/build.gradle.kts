@@ -6,12 +6,12 @@ android {
   applicationId = "pe.apptrabajador"
   minSdk = 26
   targetSdk = 35
-  versionCode = 2
-  versionName = "0.2.0-beta.1"
+  versionCode = 3
+  versionName = "0.2.0-beta.2"
   resValue("string", "app_name", "App Trabajador")
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
  }
- buildTypes { getByName("debug") { applicationIdSuffix = ".beta"; resValue("string", "app_name", "App Trabajador · Prueba") } }
+ buildTypes { getByName("debug") { applicationIdSuffix = ".beta2"; resValue("string", "app_name", "App Trabajador · Beta 2") } }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  testOptions { animationsDisabled = true }
 }
