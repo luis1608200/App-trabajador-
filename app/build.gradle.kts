@@ -8,9 +8,10 @@ android {
   targetSdk = 35
   versionCode = 2
   versionName = "0.2.0-beta.1"
+  resValue("string", "app_name", "App Trabajador")
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
  }
- buildTypes { getByName("debug") { applicationIdSuffix = ".beta" } }
+ buildTypes { getByName("debug") { applicationIdSuffix = ".beta"; resValue("string", "app_name", "App Trabajador · Prueba") } }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  testOptions { animationsDisabled = true }
 }

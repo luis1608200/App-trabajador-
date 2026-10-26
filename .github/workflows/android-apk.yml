@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
             app/build/test-results/
   device-tests:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -60,7 +60,7 @@ jobs:
         with:
           api-level: ${{ matrix.api }}
           arch: x86_64
-          target: default
+          target: google_apis
           profile: pixel_2
           disable-animations: true
           script: |
