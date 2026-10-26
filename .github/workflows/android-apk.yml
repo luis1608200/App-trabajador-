@@ -68,7 +68,11 @@ jobs:
           script: |
             gradle connectedDebugAndroidTest --stacktrace
             mkdir -p device-evidence
-            adb pull /sdcard/Android/data/pe.apptrabajador.beta/files/evidence device-evidence
+            # Screen captures are supplemental. The XML instrumentation results
+            # determine success; external storage access differs by Android API.
+            if ! adb pull /sdcard/Android/data/pe.apptrabajador.beta2/files/evidence device-evidence; then
+              echo "Screen capture directory unavailable through adb; keeping AndroidTest reports."
+            fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
