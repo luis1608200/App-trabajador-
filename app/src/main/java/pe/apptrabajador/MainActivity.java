@@ -54,14 +54,9 @@ public class MainActivity extends Activity {
       selected = LocalDate.parse(state.getString("selected", LocalDate.now().toString()));
     }
     if (Build.VERSION.SDK_INT >= 30) {
+      // Do not request a window insets controller before the decor view is
+      // attached. Some Android 15 devices crash at launch in that case.
       getWindow().setDecorFitsSystemWindows(false);
-      getWindow()
-          .getInsetsController()
-          .setSystemBarsAppearance(
-              WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-              WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
     } else
       getWindow()
           .getDecorView()
@@ -292,6 +287,17 @@ public class MainActivity extends Activity {
     }
     root.addView(nav);
     setContentView(root);
+    if (Build.VERSION.SDK_INT >= 30) {
+      // Post to the attached root so the WindowInsetsController exists.
+      root.post(() -> {
+        WindowInsetsController controller = root.getWindowInsetsController();
+        if (controller != null) {
+          int light = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+              | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+          controller.setSystemBarsAppearance(light, light);
+        }
+      });
+    }
     root.requestApplyInsets();
   }
 
