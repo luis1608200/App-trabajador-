@@ -509,15 +509,20 @@ public class MainActivity extends Activity {
               + " cancela esta entrada en curso.");
       return;
     }
-    edit(d, false);
-    editing.start = db.prefs.getInt("activeMinute", 0);
-    LocalTime t = LocalTime.now();
-    editing.end = t.getHour() * 60 + t.getMinute();
-    editing.nextDay = days == 1;
-    int total = editing.end - editing.start + (editing.nextDay ? 1440 : 0);
-    if (total <= 0 || total > 1440) {
-      error("Revisa las horas del turno antes de guardarlo.");
+    int startMinute = db.prefs.getInt("activeMinute", -1);
+    LocalTime now = LocalTime.now();
+    int endMinute = now.getHour() * 60 + now.getMinute();
+    int total = endMinute - startMinute + (days == 1 ? 1440 : 0);
+    // Validate before opening or changing the editor. An invalid punch must not
+    // overwrite a saved shift, create a draft, or silently alter the break.
+    if (startMinute < 0 || startMinute >= 1440 || total <= 0 || total > 1440) {
+      error("La entrada o salida no forman una jornada válida. Revisa las horas y registra el turno manualmente.");
+      return;
     }
+    edit(d, false);
+    editing.start = startMinute;
+    editing.end = endMinute;
+    editing.nextDay = days == 1;
     editing.breakMinutes = total > 60 ? 60 : 0;
     fields.get("break").setText(String.valueOf(editing.breakMinutes));
     overnight.setChecked(editing.nextDay);
