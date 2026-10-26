@@ -239,5 +239,13 @@ public class AppIntegrationTest {
         screenshot.recycle();
       }
     }
+    // Copy sample evidence before Gradle uninstalls the instrumented APK.
+    try (ParcelFileDescriptor command = InstrumentationRegistry.getInstrumentation()
+        .getUiAutomation().executeShellCommand("sh -c 'mkdir -p /sdcard/Download/trabajador-evidence && cp -R " + dir.getAbsolutePath() + "/. /sdcard/Download/trabajador-evidence/'");
+        InputStream in = new ParcelFileDescriptor.AutoCloseInputStream(command)) {
+      byte[] buffer = new byte[1024];
+      while (in.read(buffer) != -1) { /* wait for shell completion */ }
+    }
+
   }
 }

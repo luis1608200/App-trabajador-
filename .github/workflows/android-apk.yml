@@ -21,6 +21,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: app-trabajador-beta-debug-key-v1
       - run: gradle testDebugUnitTest lintDebug assembleDebug assembleDebugAndroidTest --stacktrace
       - uses: actions/upload-artifact@v4
         with:
@@ -51,6 +55,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: app-trabajador-beta-debug-key-v1
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -66,7 +74,7 @@ jobs:
           script: |
             gradle connectedDebugAndroidTest --stacktrace
             mkdir -p device-evidence
-            adb pull /sdcard/Android/data/pe.apptrabajador.beta/files/evidence device-evidence
+            adb pull /sdcard/Download/trabajador-evidence device-evidence
       - uses: actions/upload-artifact@v4
         if: always()
         with:

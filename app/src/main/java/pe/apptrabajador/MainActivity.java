@@ -55,13 +55,7 @@ public class MainActivity extends Activity {
     }
     if (Build.VERSION.SDK_INT >= 30) {
       getWindow().setDecorFitsSystemWindows(false);
-      getWindow()
-          .getInsetsController()
-          .setSystemBarsAppearance(
-              WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-              WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+
     } else
       getWindow()
           .getDecorView()
@@ -292,6 +286,15 @@ public class MainActivity extends Activity {
     }
     root.addView(nav);
     setContentView(root);
+    if (Build.VERSION.SDK_INT >= 30 && getWindow().getInsetsController() != null) {
+      getWindow()
+          .getInsetsController()
+          .setSystemBarsAppearance(
+              WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+              WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                  | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+    }
     root.requestApplyInsets();
   }
 
