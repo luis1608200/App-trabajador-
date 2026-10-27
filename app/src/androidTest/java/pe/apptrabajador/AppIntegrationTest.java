@@ -219,6 +219,13 @@ public class AppIntegrationTest {
         }
       }
     }
+    try (Storage db = new Storage(context)) {
+      Payroll.Shift today = new Payroll.Shift();
+      today.policy.salary = new BigDecimal("10");
+      today.tips = new BigDecimal("12.50");
+      today.commission = new BigDecimal("5");
+      db.save(today);
+    }
     try (ActivityScenario<MainActivity> app = ActivityScenario.launch(MainActivity.class)) {
       for (int tab = 0; tab < 4; tab++) {
         final int n = tab;
@@ -239,13 +246,22 @@ public class AppIntegrationTest {
         screenshot.recycle();
       }
     }
-    // Copy sample evidence before Gradle uninstalls the instrumented APK.
-    try (ParcelFileDescriptor command = InstrumentationRegistry.getInstrumentation()
-        .getUiAutomation().executeShellCommand("sh -c 'mkdir -p /sdcard/Download/trabajador-evidence && cp -R " + dir.getAbsolutePath() + "/. /sdcard/Download/trabajador-evidence/'");
-        InputStream in = new ParcelFileDescriptor.AutoCloseInputStream(command)) {
-      byte[] buffer = new byte[1024];
-      while (in.read(buffer) != -1) { /* wait for shell completion */ }
-    }
+    // UiAutomation executes a command with arguments, not a quoted shell script.
+    shell("mkdir -p /sdcard/Download/trabajador-evidence");
+    shell("cp -R " + dir.getAbsolutePath() + "/. /sdcard/Download/trabajador-evidence/");
+    assertTrue("Evidence must survive APK uninstall",
+        shell("ls /sdcard/Download/trabajador-evidence").contains("reporte-prueba.pdf"));
+  }
 
+  private String shell(String command) throws IOException {
+    ParcelFileDescriptor fd = InstrumentationRegistry.getInstrumentation()
+        .getUiAutomation().executeShellCommand(command);
+    try (InputStream in = new ParcelFileDescriptor.AutoCloseInputStream(fd);
+        ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+      byte[] buffer = new byte[4096];
+      int count;
+      while ((count = in.read(buffer)) != -1) out.write(buffer, 0, count);
+      return out.toString("UTF-8");
+    }
   }
 }
